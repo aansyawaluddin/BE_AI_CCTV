@@ -9,19 +9,22 @@ class Location(Base):
     name_location = Column(String(255), nullable=False)
     address_location = Column(String(255), nullable=False)
 
+    camera = relationship('Camera', back_populates='location', uselist=False)
+
+
 class Camera(Base):
     __tablename__ = 'camera'
     id = Column(Integer, primary_key=True, autoincrement=True)
     name_camera = Column(String(255), nullable=False)
     type_camera = Column(String(255), nullable=False)
-  
-    location = relationship('Location', back_populates='camera', uselist=False)  
     status = Column(Enum('ON', 'OFF'), nullable=True)
     ip_address = Column(String(255), nullable=False)
     id_location = Column(Integer, ForeignKey('location.id'), nullable=True)
 
-    location_ref = relationship('Location', back_populates='camera')
+    location = relationship('Location', back_populates='camera', uselist=False)
     recordings = relationship('Recording', back_populates='camera')
+    configurations = relationship('CameraConfiguration', back_populates='camera')
+
 
 class Recording(Base):
     __tablename__ = 'recording'
@@ -30,7 +33,8 @@ class Recording(Base):
     status = Column(Enum('Success', 'Failed'), nullable=True)
     id_camera = Column(Integer, ForeignKey('camera.id'), nullable=True)
 
-    camera = relationship('Camera', back_populates='recording')
+    camera = relationship('Camera', back_populates='recordings')
+
 
 class CameraConfiguration(Base):
     __tablename__ = 'camera_configuration'
